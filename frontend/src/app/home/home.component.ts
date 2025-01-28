@@ -49,7 +49,8 @@ export class HomeComponent
   {
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': 'http://localhost:4200'  });
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Method': 'POST'});
     let options = { headers: headers };
 
     this.httpClient.post('http://localhost:8080/user', this.xlsxData, options).subscribe((res: any) => {
