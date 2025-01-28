@@ -67,11 +67,10 @@ public class InfoRest
 			e.printStackTrace();
 		}
 		
-		System.out.println(jsonOutput);
-		
+		System.out.println(jsonOutput);		
 		
 		ResponseEntity<String> re = null;
-		re = ResponseEntity.status(200).header("Access-Control-Allow-Origin", "http://localhost:4200").body(jsonOutput);
+		re = ResponseEntity.status(200).header("Access-Control-Allow-Origin", "http://localhost:4200").contentType(MediaType.APPLICATION_JSON).body(jsonOutput);
 		
 		return re;
 	}
@@ -79,7 +78,7 @@ public class InfoRest
 	@PostMapping("/user")
 	@CrossOrigin(origins = "http://localhost:4200/")
 	public ResponseEntity<Usuario> addUserInfo(
-		@RequestBody(required = true) /*Map<String, String>[]*/ String reqBody
+		@RequestBody(required = true) String reqBody
 	)
 	{
 		int rows = 0;
@@ -109,11 +108,11 @@ public class InfoRest
         if (rows > 0) 
         {
             System.out.println("A new row has been inserted.");
-            return ResponseEntity.status(200).header("Access-Control-Allow-Origin", "http://localhost:4200").body(null);
+            return ResponseEntity.status(200).body(null);
         }
         else
         {
-        	return ResponseEntity.status(400).header("Access-Control-Allow-Origin", "http://localhost:4200").body(null);
+        	return ResponseEntity.status(400).body(null);
         }
 	}
 	

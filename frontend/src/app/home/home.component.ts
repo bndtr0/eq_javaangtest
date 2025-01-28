@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTableModule } from '@angular/material/table';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -8,7 +9,7 @@ import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-home',
-  imports: [ MatInputModule, MatFormFieldModule, FormsModule, CommonModule ],
+  imports: [ MatInputModule, MatFormFieldModule, MatTableModule, FormsModule, CommonModule ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -18,6 +19,8 @@ export class HomeComponent
   xlsxData: any;
   tableData: any = null;
   isTableDataReady: boolean = false;
+
+  columnsToDisplay: string[] = ["Nombre", "Rut", "Campo 1", "Campo 2", "Campo 3"];
 
   constructor(private httpClient: HttpClient){}
 
@@ -40,8 +43,7 @@ export class HomeComponent
       const ws: XLSX.WorkSheet = wb.Sheets[wsname];
 
       /* save data */
-      this.xlsxData = XLSX.utils.sheet_to_json(ws); // to get 2d array pass 2nd parameter as object {header: 1}
-      alert(JSON.stringify(this.xlsxData)); // Data will be logged in array format containing objects
+      this.xlsxData = XLSX.utils.sheet_to_json(ws); 
     };
   }
 
@@ -49,12 +51,11 @@ export class HomeComponent
   {
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Method': 'POST'});
+      'Access-Control-Allow-Origin': '*'});
     let options = { headers: headers };
 
     this.httpClient.post('http://localhost:8080/user', this.xlsxData, options).subscribe((res: any) => {
-      alert(res);
+      alert('Datos guardados en la base de datos.');
     });
   }
 
@@ -63,9 +64,10 @@ export class HomeComponent
     this.isTableDataReady = false;
 
     this.httpClient.get('http://localhost:8080/user').subscribe((res: any) => {
-      this.tableData = JSON.stringify(res);
-      this.isTableDataReady = true;
-      alert(JSON.stringify(res));
+      this.tableData = res;
+      this.isTableDataReady = true;      
+      
+      alert("¡Datos cargados desde la base de datos con éxito!");
     });
   }
 }

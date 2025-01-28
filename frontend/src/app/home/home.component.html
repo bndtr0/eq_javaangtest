@@ -14,6 +14,37 @@
         </div> 
 
         <div *ngIf="isTableDataReady">
-            Contents: {{ tableData }}
+            
+            <table mat-table #table [dataSource]="tableData" matSort class="mat-elevation-z8">
+  
+                <ng-container matColumnDef="Nombre">
+                <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+                <mat-cell *matCellDef="let usu"><div> {{usu.nombre_input}} </div></mat-cell>
+                </ng-container>
+                  
+                <ng-container matColumnDef="Rut">
+                <mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
+                <mat-cell *matCellDef="let usu"><div> {{usu.rut_input}} </div></mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="Campo 1">
+                <mat-header-cell *matHeaderCellDef>Campo 1</mat-header-cell>
+                <mat-cell *matCellDef="let usu"><div> {{usu.datos.campo1}} </div></mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="Campo 2">
+                <mat-header-cell *matHeaderCellDef>Campo 2</mat-header-cell>
+                <mat-cell *matCellDef="let usu"><div> {{usu.datos.campo2}} </div></mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="Campo 3">
+                <mat-header-cell *matHeaderCellDef>Campo 3</mat-header-cell>
+                <mat-cell *matCellDef="let usu"><div> {{usu.datos.campo3}} </div></mat-cell>
+                </ng-container>
+                  
+                <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+                <mat-row *matRowDef="let dataSource; columns: columnsToDisplay;"></mat-row>
+                  
+                </table>
         </div>
 </div>
