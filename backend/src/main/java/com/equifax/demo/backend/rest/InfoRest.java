@@ -5,7 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.function.EntityResponse;
 
 import jakarta.ws.rs.core.Response;
 import model.Dato;
@@ -17,18 +19,25 @@ public class InfoRest
 	private JdbcTemplate jdbcTemplate;
 	
 	@GetMapping("/user")
-	public Usuario readUserInfo()
-	{
+	public ResponseEntity<Usuario> readUserInfo()
+	{		
 		Dato d = new Dato();
 		Usuario u = new Usuario();
 		u.setDatos(d);
 		
-		return u;// "{'error': 'nodata'}";
+		ResponseEntity<Usuario> re = null;
+		re = ResponseEntity.status(200).header("Access-Control-Allow-Origin", "http://localhost:4200").body(u);
+		
+		return re;// "{'error': 'nodata'}";
 	}
 	
-	@PostMapping("/user1")
-	public Usuario addUserInfo()
+	@PostMapping("/user")
+	public Usuario addUserInfo(
+		@RequestBody(required = true) String reqBody
+	)
 	{
+		System.out.println(reqBody);
+		
 		Dato d = new Dato();
 		Usuario u = new Usuario();
 		u.setDatos(d);

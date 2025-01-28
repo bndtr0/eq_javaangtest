@@ -1,2 +1,17 @@
-<p>login works!</p>
+<h2>Página de Ingreso de Usuario</h2>
+<div class="formPanel">
+        <div>
+            <b>Usuario:</b>
+            <input name="nomusuario" [(ngModel)]="nomusu" placeholder="Ingrese su usuario*" />
+        </div>
+        <!-- mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error -->
 
+        <div>
+            <b>Clave:</b>
+            <input name="claveusuario" [(ngModel)]="claveusu" placeholder="Ingrese su clave*" type="password" />
+        </div>
+        
+        <div>
+            <button (click)="doLogin()">Ingresar al sistema</button>
+        </div>     
+</div>

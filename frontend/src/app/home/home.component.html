@@ -1,1 +1,19 @@
-<p>home works!</p>
+<h2>Panel de Usuario</h2>
+<div class="formPanel">
+        <div>
+            <b>Archivo Excel:</b>
+            <input type="file" (change)="uploadXlsxFile($event)" placeholder="Upload file" accept=".xlsx" />
+        </div>
+       
+        <div>
+            <button (click)="saveData()">Cargar datos en la base de datos</button>
+        </div> 
+        
+        <div>
+            <button (click)="showData()">Mostrar datos desde la base de datos</button>
+        </div> 
+
+        <div *ngIf="isTableDataReady">
+            Contents: {{ tableData }}
+        </div>
+</div>
