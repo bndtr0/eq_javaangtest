@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.function.EntityResponse;
 import org.yaml.snakeyaml.util.Tuple;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -36,14 +38,39 @@ public class InfoRest
 	private JdbcTemplate jdbcTemplate;
 	
 	@GetMapping("/user")
-	public ResponseEntity<Usuario> readUserInfo()
-	{		
-		Dato d = new Dato();
-		Usuario u = new Usuario();
-		u.setDatos(d);
+	public ResponseEntity<String> readUserInfo()
+	{			
+		String sql = "select * from Usuario";
+		SqlRowSet rs = jdbcTemplate.queryForRowSet(sql);
 		
-		ResponseEntity<Usuario> re = null;
-		re = ResponseEntity.status(200).header("Access-Control-Allow-Origin", "http://localhost:4200").body(u);
+		LinkedList<Usuario> lus = new LinkedList<Usuario>();
+		while(rs.next())
+		{
+			Usuario us = new Usuario();
+			us.setNombre_input(rs.getString("nombre_input"));
+			us.setRut_input(rs.getString("rut_input"));
+			
+			Dato da = new Dato();
+			da.setCampo1(rs.getString("campo1"));
+			da.setCampo2(rs.getString("campo2"));
+			da.setCampo3(rs.getInt("campo3"));
+			us.setDatos(da);
+			
+			lus.add(us);
+		}
+     
+		ObjectMapper objectMapper = new ObjectMapper();
+		String jsonOutput = "";
+		try {
+			jsonOutput = objectMapper.writeValueAsString(lus);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println(jsonOutput);		
+		
+		ResponseEntity<String> re = null;
+		re = ResponseEntity.status(200).header("Access-Control-Allow-Origin", "http://localhost:4200").contentType(MediaType.APPLICATION_JSON).body(jsonOutput);
 		
 		return re;
 	}
@@ -51,7 +78,7 @@ public class InfoRest
 	@PostMapping("/user")
 	@CrossOrigin(origins = "http://localhost:4200/")
 	public ResponseEntity<Usuario> addUserInfo(
-		@RequestBody(required = true) /*Map<String, String>[]*/ String reqBody
+		@RequestBody(required = true) String reqBody
 	)
 	{
 		int rows = 0;
@@ -62,7 +89,6 @@ public class InfoRest
 		try {
 			 listUe = objectMapper.readValue(reqBody, new TypeReference<List<UsuarioExcel>>(){});
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -82,11 +108,11 @@ public class InfoRest
         if (rows > 0) 
         {
             System.out.println("A new row has been inserted.");
-            return ResponseEntity.status(200).header("Access-Control-Allow-Origin", "http://localhost:4200").body(null);
+            return ResponseEntity.status(200).body(null);
         }
         else
         {
-        	return ResponseEntity.status(400).header("Access-Control-Allow-Origin", "http://localhost:4200").body(null);
+        	return ResponseEntity.status(400).body(null);
         }
 	}
 	
